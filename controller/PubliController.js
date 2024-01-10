@@ -12,10 +12,13 @@ const create = (request, response) => {
   const { nome, descricao } = request.body
 
   let foto = ''
+  
   if (request.file) {
     const image = request.file
     foto = image.filename
   }
+
+
 
   let errors = []
 
