@@ -1,78 +1,77 @@
-const conn = require('../db/conn');
+const conn = require("../db/conn");
 
 const read = (request, response) => {
-  conn('tab_coment')
-    .select()
-    .then((dados) => {
-      response.json(dados);
+  conn("tab_comments")
+    .select("id", "user_id", "comment")
+    .then((comments) => {
+      response.status(200).json(comments);
+    })
+    .catch((error) =>
+      response
+        .status(500)
+        .json({ error: "Não foi possível recuperar a lista de usuários" })
+    );
+};
+
+const create = async (request, response) => {
+  const { user_id, comment } = request.body;
+
+  let errors = [];
+
+  if (!comment) {
+    errors.push({ error: "Campo não pode estar vazio!" });
+  }
+
+  if (errors.length > 0) {
+    return response.status(400).json(errors);
+  }
+
+  conn("tab_comments")
+    .insert({
+        user_id,
+    comment,
+    })
+    .then(() => {
+      response.json({ msg: "Comentário enviado!" });
     })
     .catch((error) => {
       response.status(500).json({
-        error: 'Erro ao buscar os Comentários no banco de dados!',
+        error: "Erro ao comentar. Tente Novamente." + error,
       });
     });
 };
 
-const create = (request, response) => {
-    const { comentario } = request.body;
-    const { postId } = request.params; // Alterado para obter o postId dos parâmetros da rota
-    const nome = request.user.nome; // Substituir por como você obtém o nome do usuário a partir do token
-  
-    let errors = [];
-  
-    if (!comentario) {
-      errors.push({ error: 'Comentário não fornecido' });
-    }
-  
-    if (errors.length > 0) {
-      return response.status(400).json(errors);
-    }
-  
-    conn('tab_coment')
-      .insert({
-        nome,
-        comentario,
-        postId,
-      })
-      .then((_) => {
-        response.json({ msg: 'Comentário realizado com sucesso!' });
+const readById = (request, response) => {
+  const id = Number(request.params.id)
+    conn('tab_comments')
+      .where({ id: id })
+      .first()
+      .then((comment) => {
+        if (comment == undefined) {
+          response.status(404).json({ error: "Comentário não existe, ou foi deletado." });
+        }
+        response.status(200).json(comment)
       })
       .catch((error) => {
         response.status(500).json({
-          error: 'Erro ao inserir o Comentário ',
-        });
-      });
-  };
+          error: "Erro ao acessar servidor, tente mais tarde!" + error,
+        })
+      })
+  }
+  
+  const del = (request, response) => {
+    const id = Number(request.params.id)
+    conn('tab_comments')
+      .del()
+      .where({ id: id })
+      .then((_) => {
+        response.status(200).json({ msg: 'O Comentário foi excluido!' })
+      })
+      .catch((error) => {
+        response.status(500).json({
+          error: 'Erro ao excluir comentário!',
+        })
+      })
+  }
 
-const readById = (request, response) => {
-  const postId = Number(request.params.postId);
-
-  conn('tab_coment')
-    .where({ postId })
-    .then((coments) => {
-      response.status(200).json(coments);
-    })
-    .catch((error) => {
-      response.status(500).json({
-        error: 'Erro ao buscar os Comentários no banco de dados!',
-      });
-    });
-};
-
-const del = (request, response) => {
-  const commentId = Number(request.params.commentId);
-  conn('tab_coment')
-    .del()
-    .where({ id: commentId })
-    .then((_) => {
-      response.status(200).json({ msg: 'O Comentário foi excluído!' });
-    })
-    .catch((error) => {
-      response.status(500).json({
-        error: 'Erro ao excluir o Comentário do banco de dados!',
-      });
-    });
-};
-
-module.exports = { read, create, readById, del };
- 
+module.exports = { create, read, readById, del }

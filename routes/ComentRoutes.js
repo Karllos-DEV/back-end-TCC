@@ -1,15 +1,14 @@
 const router = require("express").Router();
 
 const ComentController = require("../controller/ComentController");
+const { authMiddleware } = require("../helpers/authMiddleware");
 
-router.get("/", ComentController.read);
+router.post("/post", authMiddleware, ComentController.create);
 
-router.post("/", ComentController.create);
+router.get("/", authMiddleware, ComentController.read);
 
-router.get("/:id", ComentController.readById);
+router.get("/:id", authMiddleware, ComentController.readById);
 
-router.get("/coment/:postId", ComentController.readById);
-
-router.delete("/:id", ComentController.del);
+router.delete("/del/:id", authMiddleware, ComentController.del);
 
 module.exports = router;

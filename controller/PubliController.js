@@ -9,16 +9,14 @@ const read = (request, response) => {
 }
 
 const create = (request, response) => {
-  const { nome, descricao } = request.body
+  const { user_id, nome, descricao, } = request.body
+  console.log(request.body)
 
   let foto = ''
-  
   if (request.file) {
     const image = request.file
     foto = image.filename
   }
-
-
 
   let errors = []
 
@@ -36,6 +34,7 @@ const create = (request, response) => {
 
   conn('tab_dados')
     .insert({
+      user_id,
       nome,
       descricao,
       foto,
@@ -45,7 +44,7 @@ const create = (request, response) => {
     })
     .catch((error) => {
       response.status(500).json({
-        error: 'Erro ao inserir a Publicação ',
+        error: 'Erro ao inserir a Publicação' + error,
       })
     })
 }
@@ -94,6 +93,36 @@ const readById = (request, response) => {
     })
 }
 
+const readMyPost = (request, response) => {
+  const user_id = Number(request.params.id)
+  conn('tab_dados')
+    .where({ user_id : user_id })
+    .first()
+    .then((post) => {
+      response.status(200).json(post)
+    })
+    .catch((error) => {
+      response.status(500).json({
+        error: 'Erro ao buscar a Publicação no banco de dados!',
+      })
+    })
+}
+
+const readComment = (request, response) => {
+  const user_id = Number(request.params.id)
+  conn('tab_dados')
+    .where({ user_id : user_id })
+    .first()
+    .then((comment) => {
+      response.status(200).json(comment)
+    })
+    .catch((error) => {
+      response.status(500).json({
+        error: 'Erro ao buscar o Comentário no banco de dados! Tente Novamente.',
+      })
+    })
+}
+
 const del = (request, response) => {
   const id = Number(request.params.id)
   conn('tab_dados')
@@ -109,4 +138,4 @@ const del = (request, response) => {
     })
 }
 
-module.exports = { read, create, update, readById, del }
+module.exports = { read, create, update, readById, readMyPost, readComment, del }

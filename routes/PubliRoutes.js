@@ -5,12 +5,17 @@ const imageUpload = require("../helpers/imageUpload");
 
 router.get("/", PubliController.read);
 
-router.post("/", imageUpload.single('foto'), PubliController.create);
+router.post("/post", imageUpload.single('foto'), PubliController.create);
 
 router.put("/:id", PubliController.update);
 
 router.get("/:id", PubliController.readById);
 
 router.delete("/:id", PubliController.del);
+
+router.get("/:id", PubliController.readMyPost);
+
+router.get("/:id", PubliController.readComment);
+
 
 module.exports = router;
