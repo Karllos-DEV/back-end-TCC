@@ -58,6 +58,24 @@ const readById = (request, response) => {
         })
       })
   }
+
+  const readCommentById = (request, response) => {
+    const id = Number(request.params.id)
+      conn('tab_comments')
+        .where({ id: id })
+        .first()
+        .then((comment) => {
+          if (comment == undefined) {
+            response.status(404).json({ error: "Comentário não existe, ou foi deletado." });
+          }
+          response.status(200).json(comment)
+        })
+        .catch((error) => {
+          response.status(500).json({
+            error: "Erro ao acessar servidor, tente mais tarde!" + error,
+          })
+        })
+    }
   
   const del = (request, response) => {
     const id = Number(request.params.id)

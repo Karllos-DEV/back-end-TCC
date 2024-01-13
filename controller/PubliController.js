@@ -97,7 +97,7 @@ const readMyPost = (request, response) => {
   const user_id = Number(request.params.id)
   conn('tab_dados')
     .where({ user_id : user_id })
-    .first()
+    .select()
     .then((post) => {
       response.status(200).json(post)
     })

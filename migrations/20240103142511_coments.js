@@ -3,10 +3,12 @@ exports.up = function (knex) {
     t.increments()
     t.string('comment').notNull()
     t.integer('user_id').unsigned().notNullable();
+    t.integer('post_id').unsigned().notNullable();
     t.foreign('user_id').references('tab_users.id');
+    t.foreign('post_id').references('tab_dados.id');
   })
 }
 
 exports.down = function (knex) {
-  return knex.schema.dropTable('tab_comments')
+  return knex.schema.dropTable('tab_coments')
 }

@@ -13,7 +13,7 @@ router.get("/:id", PubliController.readById);
 
 router.delete("/:id", PubliController.del);
 
-router.get("/:id", PubliController.readMyPost);
+router.get("/myposts/:id", PubliController.readMyPost);
 
 router.get("/:id", PubliController.readComment);
 
