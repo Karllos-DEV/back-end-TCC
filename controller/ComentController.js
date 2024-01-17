@@ -1,8 +1,12 @@
 const conn = require("../db/conn");
 
 const read = (request, response) => {
-  conn("tab_comments")
+
+  const postId = Number(request.params.id) 
+
+  conn("tab_coments")
     .select("id", "user_id", "comment")
+    .where({ post_id: postId })
     .then((comments) => {
       response.status(200).json(comments);
     })
@@ -14,7 +18,8 @@ const read = (request, response) => {
 };
 
 const create = async (request, response) => {
-  const { user_id, comment } = request.body;
+  const { user_id, post_id, comment } = request.body;
+  
 
   let errors = [];
 
@@ -26,10 +31,11 @@ const create = async (request, response) => {
     return response.status(400).json(errors);
   }
 
-  conn("tab_comments")
+  conn("tab_coments")
     .insert({
-        user_id,
-    comment,
+      comment,
+      user_id,
+      post_id,
     })
     .then(() => {
       response.json({ msg: "Comentário enviado!" });
@@ -43,53 +49,53 @@ const create = async (request, response) => {
 
 const readById = (request, response) => {
   const id = Number(request.params.id)
-    conn('tab_comments')
-      .where({ id: id })
-      .first()
-      .then((comment) => {
-        if (comment == undefined) {
-          response.status(404).json({ error: "Comentário não existe, ou foi deletado." });
-        }
-        response.status(200).json(comment)
+  conn('tab_coments')
+    .where({ id: id })
+    .first()
+    .then((comment) => {
+      if (comment == undefined) {
+        response.status(404).json({ error: "Comentário não existe, ou foi deletado." });
+      }
+      response.status(200).json(comment)
+    })
+    .catch((error) => {
+      response.status(500).json({
+        error: "Erro ao acessar servidor, tente mais tarde!" + error,
       })
-      .catch((error) => {
-        response.status(500).json({
-          error: "Erro ao acessar servidor, tente mais tarde!" + error,
-        })
-      })
-  }
+    })
+}
 
-  const readCommentById = (request, response) => {
-    const id = Number(request.params.id)
-      conn('tab_comments')
-        .where({ id: id })
-        .first()
-        .then((comment) => {
-          if (comment == undefined) {
-            response.status(404).json({ error: "Comentário não existe, ou foi deletado." });
-          }
-          response.status(200).json(comment)
-        })
-        .catch((error) => {
-          response.status(500).json({
-            error: "Erro ao acessar servidor, tente mais tarde!" + error,
-          })
-        })
-    }
-  
-  const del = (request, response) => {
-    const id = Number(request.params.id)
-    conn('tab_comments')
-      .del()
-      .where({ id: id })
-      .then((_) => {
-        response.status(200).json({ msg: 'O Comentário foi excluido!' })
+const readCommentById = (request, response) => {
+  const id = Number(request.params.id)
+  conn('tab_coments')
+    .where({ id: id })
+    .first()
+    .then((comment) => {
+      if (comment == undefined) {
+        response.status(404).json({ error: "Comentário não existe, ou foi deletado." });
+      }
+      response.status(200).json(comment)
+    })
+    .catch((error) => {
+      response.status(500).json({
+        error: "Erro ao acessar servidor, tente mais tarde!" + error,
       })
-      .catch((error) => {
-        response.status(500).json({
-          error: 'Erro ao excluir comentário!',
-        })
-      })
-  }
+    })
+}
 
-module.exports = { create, read, readById, del }
+const del = (request, response) => {
+  const id = Number(request.params.id)
+  conn('tab_coments')
+    .del()
+    .where({ id: id })
+    .then((_) => {
+      response.status(200).json({ msg: 'O Comentário foi excluido!' })
+    })
+    .catch((error) => {
+      response.status(500).json({
+        error: 'Erro ao excluir comentário!',
+      })
+    })
+}
+
+module.exports = { create, read, readById, del, readCommentById }
