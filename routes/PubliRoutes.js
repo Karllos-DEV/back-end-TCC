@@ -15,7 +15,8 @@ router.delete("/:id", PubliController.del);
 
 router.get("/myposts/:id", PubliController.readMyPost);
 
-router.get("/:id", PubliController.readComment);
+//router.get("/:id", PubliController.readComment);
+
 
 
 module.exports = router;
