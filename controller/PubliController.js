@@ -125,6 +125,7 @@ const readComment = (request, response) => {
 
 const del = (request, response) => {
   const id = Number(request.params.id)
+  console.log(id)
   conn('tab_dados')
     .del()
     .where({ id: id })
@@ -132,6 +133,7 @@ const del = (request, response) => {
       response.status(200).json({ msg: 'A Publicação foi excluida!' })
     })
     .catch((error) => {
+      console.log(error)
       response.status(500).json({
         error: 'Erro ao excluir a Publicação do banco de dados!',
       })

@@ -5,7 +5,7 @@ exports.up = function (knex) {
     t.string('descricao', 100).notNull();
     t.string('foto', 100).notNull();
     t.integer('user_id').unsigned().notNullable();
-    t.foreign('user_id').references('tab_users.id');
+    t.foreign('user_id').references('tab_users.id').onDelete('CASCADE');
   });
 };
 
