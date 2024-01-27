@@ -10,7 +10,6 @@ const read = (request, response) => {
 
 const create = (request, response) => {
   const { user_id, nome, descricao, } = request.body
-  console.log(request.body)
 
   let foto = ''
   if (request.file) {
@@ -50,10 +49,14 @@ const create = (request, response) => {
 }
 
 const update = (request, response) => {
-  const { nome, descricao, foto } = request.body
-  console.log(request.body)
-  
+  const { nome, descricao } = request.body
 
+  let foto = ''
+  if (request.file) {
+    const image = request.file
+    foto = image.filename
+  }
+  
   const id = Number(request.params.id)
 
   if (!nome) {

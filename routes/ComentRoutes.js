@@ -7,8 +7,8 @@ router.post("/", ComentController.create);
 
 router.get("/:id", ComentController.read);
 
-// router.get("/:id", authMiddleware, ComentController.readById);
+router.get("/:id", ComentController.readById);
 
-router.delete("/del/:id", authMiddleware, ComentController.del);
+router.delete("/:id", ComentController.del);
 
 module.exports = router;

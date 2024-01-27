@@ -7,7 +7,7 @@ router.get("/", PubliController.read);
 
 router.post("/post", imageUpload.single('foto'), PubliController.create);
 
-router.put("/:id", PubliController.update);
+router.post("/update/:id", imageUpload.single('foto'), PubliController.update);
 
 router.get("/:id", PubliController.readById);
 
@@ -15,6 +15,7 @@ router.delete("/:id", PubliController.del);
 
 router.get("/myposts/:id", PubliController.readMyPost);
 
+router.get("/id", PubliController.readComment)
 //router.get("/:id", PubliController.readComment);
 
 
