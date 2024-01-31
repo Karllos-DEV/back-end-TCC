@@ -11,6 +11,8 @@ app.use(cors());
 
 app.use(express.json());
 
+app.use(express.static('build'))
+
 // Public folder for images
 app.use(express.static('public'))
 
